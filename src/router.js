@@ -1,0 +1,110 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+Vue.use(Router)
+
+const Home = () => import('@/views/home');
+const Category = () => import('@/views/category');
+const Cart = () => import('@/views/cart');
+const Mine = () => import('@/views/mine');
+
+// 解决vue-router导航重复
+const originalPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
+
+const router = new Router({
+  mode: "history",
+  routes: [
+    {
+      path: '/',
+      redirect: "/dashboard/home"
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import('@/views/login')
+    },
+    {
+      path: "/dashboard",
+      component: () => import('@/views/layout'),
+      children: [
+        {
+          path: 'home',
+          name: "Home",
+          component: Home,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          path: "category",
+          name: "Category",
+          component: Category,
+        },
+        {
+          path: 'cart',
+          name: "Cart",
+          component: Cart
+        },
+        {
+          path: "mine",
+          name: "Mine",
+          component: Mine,
+          meta: {
+            keepAlive: true
+          }
+        }
+      ]
+    },
+    {
+      path: "/dashboard/home/map",
+      name: "MyMap",
+      component: () => import('@/views/home/myMap')
+    },
+    {
+      path: "/mine/profile",
+      name: "Profile",
+      component: () => import('@/views/mine/profile/profile')
+    },
+    {
+      path: "/profile/changeName",
+      name: "ChangeName",
+      component: () => import('@/views/mine/profile/changeName')
+    },
+    {
+      path: "/mine/order",
+      name: "Order",
+      component: () => import('@/views/mine/order')
+    },
+  
+    {
+      path: "/mine/myaddress",
+      name: "Address",
+      component: () => import('@/views/mine/address/myAddress')
+    },
+    {
+      path: "/mine/addaddress",
+      name: "AddAddress",
+      component: () => import('@/views/mine/address/addAddress')
+    },
+    {
+      path: "/mine/editaddress",
+      name: "EditAddress",
+      component: () => import('@/views/mine/address/editAddress')
+    },
+    {
+      path: "/orderfill",
+      name: "OrderFill",
+      component: () => import('@/views/cart/order/orderFill')
+    },
+    {
+      path: "/goodslist",
+      name: "GoodsList",
+      component: () => import('@/views/cart/order/goodsList')
+    }
+  ]
+})
+
+
+export default router;
